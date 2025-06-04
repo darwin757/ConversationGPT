@@ -11,19 +11,19 @@ function App() {
 
   const handleAddPrompt = (newPrompts) => {
     setPrompts(newPrompts);
-    // Start the conversation with the first prompt
-    getChatGPTResponse(newPrompts[0]);
+    // Start the conversation with the first prompt and pass the full list
+    getChatGPTResponse(newPrompts[0], newPrompts);
   };
 
 
-  const getChatGPTResponse = async (prompt) => {
+  const getChatGPTResponse = async (prompt, promptList = prompts) => {
     try {
       const response = await axios.post('http://127.0.0.1:5000/chat', { prompt });
       setConversation((prev) => [...prev, response.data.response]);
       // Continue the conversation with the next prompt
-      const nextIndex = prompts.indexOf(prompt) + 1;
-      if (nextIndex < prompts.length) {
-        getChatGPTResponse(prompts[nextIndex]);
+      const nextIndex = promptList.indexOf(prompt) + 1;
+      if (nextIndex < promptList.length) {
+        getChatGPTResponse(promptList[nextIndex], promptList);
       }
     } catch (error) {
       console.error("Error fetching response:", error);
